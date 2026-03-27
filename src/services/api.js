@@ -5,7 +5,7 @@ const BASE_URL = 'https://gutendex.com';
 
 const apiClient = axios.create({
     baseURL: BASE_URL,
-    //timeout: 20000,
+    timeout: 20000,
 });
 
 export const bookService = {

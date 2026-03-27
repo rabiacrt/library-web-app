@@ -11,7 +11,8 @@ const Home = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [nextPageUrl, setNextPageUrl] = useState(null);
   const [prevPageUrl, setPrevPageUrl] = useState(null);
-
+  const [language, setLanguage] = useState('');
+  const [topic, setTopic] = useState('');
   const debouncedSearch = useDebounce(searchTerm, 500);
 
   const loadBooks = useCallback(async (url) => {
@@ -31,12 +32,18 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    const initialUrl = debouncedSearch 
-      ? `/books/?search=${encodeURIComponent(debouncedSearch)}` 
-      : '/books/';
-    
-    loadBooks(initialUrl);
-  }, [debouncedSearch, loadBooks]);
+    let url = `/books/?search=${encodeURIComponent(debouncedSearch)}`;
+
+    if (language) {
+      url += `&languages=${language}`;
+    }
+  
+    if (topic) {
+      url += `&topic=${topic}`;
+    }
+  
+    loadBooks(url);
+  }, [debouncedSearch, language, topic, loadBooks]);
 
   const handlePageChange = (direction) => {
     const targetUrl = direction === 'next' ? nextPageUrl : prevPageUrl;
@@ -54,6 +61,38 @@ const Home = () => {
         </header>
 
         <SearchBar value={searchTerm} onChange={setSearchTerm} />
+
+        <div className="flex flex-wrap gap-4 justify-center mb-10">
+          <select
+          value={language}
+          onChange={(e) => setLanguage(e.target.value)}
+          className="px-4 py-2 border rounded-full  bg-pink-300 text-white border-pink-600 hover:bg-pink-400 focus:ring-2 focus:ring-blue-300 active:scale-95 outline-none">
+            <option value="">Tüm Diller</option>
+            <option value="en">🇬🇧 İngilizce</option>
+            <option value="fr">🇫🇷 Fransızca</option>
+            <option value="de">🇩🇪 Almanca</option>
+            <option value="tr">🇹🇷 Türkçe</option>
+          </select>
+
+          <select
+          value={topic}
+          onChange={(e) => setTopic(e.target.value)}
+          className="px-4 py-2 border rounded-full  bg-pink-300 text-white border-pink-600 hover:bg-pink-400 focus:ring-2 focus:ring-blue-300 active:scale-95 outline-none">
+            <option value="">Tüm Kategoriler</option>
+            <option value="fiction">Kurgu (Fiction)</option>
+            <option value="drama">Drama</option>
+            <option value="history">Tarih</option>
+            <option value="science">Bilim</option>
+            <option value="children">Çocuk</option>
+          </select>
+
+          {(language || topic || searchTerm) && (
+            <button onClick={() => { setLanguage(''); setTopic(''); setSearchTerm(''); }} className="text-pink-500 hover:underline text-sm font-medium">
+              Temizle
+            </button>
+          )} 
+        </div>
+
 
         {loading ? (
           <div className="flex justify-center items-center h-64">

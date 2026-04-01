@@ -53,10 +53,10 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-10 px-4">
+    <div className="min-h-screen bg-cream py-10 px-4">
       <div className="container mx-auto">
         <header className="text-center mb-12">
-          <h1 className="text-4xl font-extrabold text-gray-900 mb-2">Çevrimiçi Kütüphane</h1>
+          <h1 className="text-4xl font-display text-gray-900 mb-2">Çevrimiçi Kütüphane</h1>
           <p className="text-gray-600">📖 </p>
         </header>
 
@@ -66,7 +66,7 @@ const Home = () => {
           <select
           value={language}
           onChange={(e) => setLanguage(e.target.value)}
-          className="px-4 py-2 border rounded-full  bg-pink-300 text-white border-pink-600 hover:bg-pink-400 focus:ring-2 focus:ring-blue-300 active:scale-95 outline-none">
+          className="px-4 py-2 border rounded-full   bg-rust text-cream hover:bg-dark   focus:ring-2 focus:ring-amber-600 transition-colors active:scale-95 outline-none">
             <option value="">Tüm Diller</option>
             <option value="en">🇬🇧 İngilizce</option>
             <option value="fr">🇫🇷 Fransızca</option>
@@ -77,7 +77,7 @@ const Home = () => {
           <select
           value={topic}
           onChange={(e) => setTopic(e.target.value)}
-          className="px-4 py-2 border rounded-full  bg-pink-300 text-white border-pink-600 hover:bg-pink-400 focus:ring-2 focus:ring-blue-300 active:scale-95 outline-none">
+          className="px-4 py-2 border rounded-full bg-rust text-cream hover:bg-dark   focus:ring-2 focus:ring-amber-600 transition-colors active:scale-95 outline-none">
             <option value="">Tüm Kategoriler</option>
             <option value="fiction">Kurgu (Fiction)</option>
             <option value="drama">Drama</option>
@@ -87,7 +87,7 @@ const Home = () => {
           </select>
 
           {(language || topic || searchTerm) && (
-            <button onClick={() => { setLanguage(''); setTopic(''); setSearchTerm(''); }} className="text-pink-500 hover:underline text-sm font-medium">
+            <button onClick={() => { setLanguage(''); setTopic(''); setSearchTerm(''); }} className="text-black hover:underline text-sm font-medium">
               Temizle
             </button>
           )} 
@@ -101,7 +101,7 @@ const Home = () => {
         ) : (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-              {books.map(book => (
+              {books.slice(0, 12).map(book => (
                 <BookCard key={book.id} book={book} />
               ))}
             </div>

@@ -7,7 +7,7 @@ import Favorites from './pages/Favorites';
 function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-cream ">
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />

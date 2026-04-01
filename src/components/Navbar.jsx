@@ -10,12 +10,12 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="bg-white shadow-sm border-b sticky top-0 z-50">
+    <nav className="bg-cream shadow-sm border-b sticky top-0 z-50">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           
-          <Link to="/" className="text-2xl font-black text-pink-400 tracking-tighter">
-            KÜTÜP<span className="text-gray-900">HANE</span>
+          <Link to="/" className="font-display text-2xl font-black tracking-tight text-dark">
+            KÜTÜP<span className="text-rust">HANE</span>
           </Link>
 
           
@@ -24,10 +24,10 @@ const Navbar = () => {
               <Link
                 key={link.path}
                 to={link.path}
-                className={`text-sm font-semibold transition-colors ${
+                className={`text-sm font-display transition-colors ${
                   location.pathname === link.path 
-                    ? 'text-pink-400' 
-                    : 'text-gray-600 hover:text-pink-400'
+                    ? 'text-rust' 
+                    : 'text-gray-600 hover:text-rust-400'
                 }`}
               >
                 {link.name}

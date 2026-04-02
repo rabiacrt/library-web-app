@@ -17,7 +17,7 @@ const SearchBar = ({ value, onChange }) => {
 
        
       />
-      <button className="absolute right-0 top-0 bottom-0 px-5 bg-rust text-cream hover:bg-dark transition-colors">
+      <button className="absolute right-0 top-0 bottom-0 px-5 bg-rust dark:bg-warm text-cream hover:bg-dark transition-colors">
           <Search size={16} />
         </button>
       

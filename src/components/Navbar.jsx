@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { Sun, Moon } from 'lucide-react'
 
-const Navbar = () => {
+const Navbar = ({ onToggleDark, dark }) => {
   const location = useLocation();
 
   const navLinks = [
@@ -10,13 +11,17 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="bg-cream shadow-sm border-b sticky top-0 z-50">
+    <nav className="bg-cream dark:bg-dark shadow-sm border-b border-warm/20 dark:border-warm/10 sticky top-0 z-50">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           
-          <Link to="/" className="font-display text-2xl font-black tracking-tight text-dark">
-            KÜTÜP<span className="text-rust">HANE</span>
-          </Link>
+        <Link to="/" className="font-display text-2xl font-black tracking-tight text-dark dark:text-cream">
+  KÜTÜP<span className="text-rust dark:text-gold">HANE</span>
+</Link>
+
+          <button onClick={onToggleDark}>
+  {dark ? <Sun size={18} /> : <Moon size={18} />}
+</button>
 
           
           <div className="flex space-x-8">
@@ -26,8 +31,8 @@ const Navbar = () => {
                 to={link.path}
                 className={`text-sm font-display transition-colors ${
                   location.pathname === link.path 
-                    ? 'text-rust' 
-                    : 'text-gray-600 hover:text-rust-400'
+                    ? 'text-rust dark:text-gold' 
+                    : 'text-ink/60 dark:text-cream/60 hover:text-rust dark:hover:text-gold'
                 }`}
               >
                 {link.name}

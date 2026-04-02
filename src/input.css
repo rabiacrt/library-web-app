@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-cream: #F5F0E8;
   --color-light-warm: #EDE5D5;
@@ -22,5 +24,9 @@
     font-family: 'DM Sans', sans-serif;
     font-weight: 300;
     overflow-x: hidden;
+  }
+  body.dark {
+    background-color: #1A1410;
+    color: #F5F0E8;
   }
 }

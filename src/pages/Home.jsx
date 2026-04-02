@@ -53,10 +53,10 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-screen bg-cream py-10 px-4">
+    <div className="min-h-screen bg-cream dark:bg-dark py-10 px-4">
       <div className="container mx-auto">
         <header className="text-center mb-12">
-          <h1 className="text-4xl font-display text-gray-900 mb-2">Çevrimiçi Kütüphane</h1>
+          <h1 className="text-4xl font-display text-dark dark:text-cream mb-2">Çevrimiçi Kütüphane</h1>
           <p className="text-gray-600">📖 </p>
         </header>
 
@@ -66,7 +66,8 @@ const Home = () => {
           <select
           value={language}
           onChange={(e) => setLanguage(e.target.value)}
-          className="px-4 py-2 border rounded-full   bg-rust text-cream hover:bg-dark   focus:ring-2 focus:ring-amber-600 transition-colors active:scale-95 outline-none">
+          className="px-4 py-2 border border-warm/30 rounded-full bg-rust dark:bg-warm text-cream 
+           focus:ring-2 focus:ring-amber-600 transition-colors outline-none">
             <option value="">Tüm Diller</option>
             <option value="en">🇬🇧 İngilizce</option>
             <option value="fr">🇫🇷 Fransızca</option>
@@ -77,7 +78,8 @@ const Home = () => {
           <select
           value={topic}
           onChange={(e) => setTopic(e.target.value)}
-          className="px-4 py-2 border rounded-full bg-rust text-cream hover:bg-dark   focus:ring-2 focus:ring-amber-600 transition-colors active:scale-95 outline-none">
+          className="px-4 py-2 border border-warm/30 rounded-full bg-rust dark:bg-warm text-cream 
+           focus:ring-2 focus:ring-amber-600 transition-colors outline-none">
             <option value="">Tüm Kategoriler</option>
             <option value="fiction">Kurgu (Fiction)</option>
             <option value="drama">Drama</option>
@@ -87,7 +89,7 @@ const Home = () => {
           </select>
 
           {(language || topic || searchTerm) && (
-            <button onClick={() => { setLanguage(''); setTopic(''); setSearchTerm(''); }} className="text-black hover:underline text-sm font-medium">
+            <button onClick={() => { setLanguage(''); setTopic(''); setSearchTerm(''); }} className="text-ink dark:text-cream/60 hover:text-rust dark:hover:text-gold text-sm font-medium">
               Temizle
             </button>
           )} 
@@ -96,7 +98,7 @@ const Home = () => {
 
         {loading ? (
           <div className="flex justify-center items-center h-64">
-             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-pink-600"></div>
+             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-rust dark:border-gold"></div>
           </div>
         ) : (
           <>
@@ -107,7 +109,7 @@ const Home = () => {
             </div>
 
             {books.length === 0 ? (
-              <p className="text-center text-gray-500 mt-10">Kitap bulunamadı.</p>
+              <p className="text-center text-ink/40 dark:text-cream/40 mt-10">Kitap bulunamadı.</p>
             ) : (
               <Pagination 
                 hasPrev={!!prevPageUrl} 

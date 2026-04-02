@@ -34,24 +34,24 @@ const BookDetail = () => {
   };
 
   if (loading) return (
-    <div className="flex justify-center items-center min-h-screen">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
+    <div className="flex justify-center dark:bg-dark items-center min-h-screen">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-rust"></div>
     </div>
   );
 
   if (!book) return <div className="text-center py-20">Kitap bulunamadı.</div>;
 
   return (
-    <div className="container mx-auto px-4 py-10 max-w-5xl">
+    <div className="container  mx-auto px-4 py-10 ">
       
       <button 
         onClick={() => navigate(-1)}
-        className="mb-6 flex items-center text-pink-400 hover:text-pink-600 transition-colors"
+        className="mb-6 flex items-center font-display font-bold text-gold hover:text-rust transition-colors"
       >
         ← Geri Dön
       </button>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-10 bg-white p-6 rounded-2xl shadow-lg">
+      <div className="dark:bg-dark grid grid-cols-1 md:grid-cols-3 gap-10 font-display bg-light-warm p-6 rounded-2xl shadow-lg">
      
         <div className="md:col-span-1">
           <img 
@@ -61,23 +61,23 @@ const BookDetail = () => {
           />
           <button
             onClick={handleToggleFavorite}
-            className={`w-full mt-4 py-3 rounded-lg font-semibold transition-all border ${
+            className={`w-full mt-4 py-3 rounded-lg font-dsiplay font-semibold transition-all border ${
               isFav 
-                ? 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100' 
-                : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                ? 'bg-red-50 text-gold border-red-200 hover:bg-red-100' 
+                : 'bg-white text-gold border-gray-300 hover:bg-gray-50'
             }`}
           >
-            {isFav ? '❤️ Favorilerden Çıkar' : '🤍 Favorilere Ekle'}
+            {isFav ? '❤️ ' : '🤍 '}
           </button>
         </div>
 
         
-        <div className="md:col-span-2 space-y-6">
+        <div className="md:col-span-2 space-y-6 dark:bg-dark">
           <header>
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight mb-2">
+            <h1 className="text-3xl md:text-4xl font-bold text-gold leading-tight mb-2">
               {book.title}
             </h1>
-            <p className="text-xl text-gray-600 italic">
+            <p className="text-xl text-gold-600 italic">
               {book.authors.map(a => a.name).join(', ')}
             </p>
           </header>
@@ -86,10 +86,10 @@ const BookDetail = () => {
 
           <section className="space-y-4">
             <div>
-              <h3 className="text-lg font-semibold text-gray-800">Konular:</h3>
+              <h3 className="text-lg font-display font-bold text-gold-600">Konular:</h3>
               <div className="flex flex-wrap gap-2 mt-2">
                 {book.subjects.map((sub, i) => (
-                  <span key={i} className="bg-blue-100 text-pink-400 px-3 py-1 rounded-full text-xs font-medium">
+                  <span key={i} className="bg-rust text-gold px-3 py-1 rounded-full text-xs font-medium">
                     {sub}
                   </span>
                 ))}
@@ -97,25 +97,25 @@ const BookDetail = () => {
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              <div className="bg-gray-50 p-3 rounded-lg">
-                <p className="text-sm text-gray-500 uppercase tracking-wider">Dil</p>
+              <div className="bg-white p-3 rounded-lg">
+                <p className="text-sm text-gold uppercase tracking-wider">Dil</p>
                 <p className="font-semibold text-gray-800 capitalize">{book.languages.join(', ')}</p>
               </div>
-              <div className="bg-gray-50 p-3 rounded-lg">
-                <p className="text-sm text-gray-500 uppercase tracking-wider">İndirme Sayısı</p>
+              <div className="bg-white p-3 rounded-lg">
+                <p className="text-sm text-gold uppercase tracking-wider">İndirme Sayısı</p>
                 <p className="font-semibold text-gray-800">{book.download_count.toLocaleString()}</p>
               </div>
             </div>
           </section>
 
           <section>
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">Okuma ve İndirme Seçenekleri</h3>
+            <h3 className="text-lg font-display font-bold text-gold-600 mb-4">Okuma ve İndirme Seçenekleri</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {book.formats['text/html'] && (
                 <a 
                   href={book.formats['text/html']} 
                   target="_blank" rel="noreferrer"
-                  className="flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 transition"
+                  className="flex items-center justify-center gap-2 bg-gold text-white px-4 py-3 rounded-lg hover:bg-rust transition"
                 >
                   🌐 Çevrimiçi Oku
                 </a>
@@ -123,7 +123,7 @@ const BookDetail = () => {
               {book.formats['application/epub+zip'] && (
                 <a 
                   href={book.formats['application/epub+zip']} 
-                  className="flex items-center justify-center gap-2 bg-emerald-600 text-white px-4 py-3 rounded-lg hover:bg-emerald-700 transition"
+                  className="flex items-center justify-center gap-2 bg-gold text-white px-4 py-3 rounded-lg hover:bg-rust transition"
                 >
                   📖 EPUB İndir
                 </a>
@@ -131,7 +131,7 @@ const BookDetail = () => {
               {book.formats['application/pdf'] && (
                 <a 
                   href={book.formats['application/pdf']} 
-                  className="flex items-center justify-center gap-2 bg-red-600 text-white px-4 py-3 rounded-lg hover:bg-red-700 transition"
+                  className="flex items-center justify-center gap-2 bg-gold text-white px-4 py-3 rounded-lg hover:bg-rust transition"
                 >
                   📄 PDF İndir
                 </a>
@@ -139,7 +139,7 @@ const BookDetail = () => {
               {book.formats['text/plain; charset=us-ascii'] && (
                 <a 
                   href={book.formats['text/plain; charset=us-ascii']} 
-                  className="flex items-center justify-center gap-2 bg-gray-600 text-white px-4 py-3 rounded-lg hover:bg-gray-700 transition"
+                  className="flex items-center justify-center gap-2 bg-gold text-white px-4 py-3 rounded-lg hover:bg-rust transition"
                 >
                   📝 TXT Olarak Gör
                 </a>

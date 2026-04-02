@@ -13,16 +13,16 @@ const Favorites = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50 py-10 px-4">
+    <div className="min-h-screen bg-cream dark:bg-dark py-10 px-4">
       <div className="container mx-auto">
         <header className="flex justify-between items-center mb-10">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Favori Kitaplarım</h1>
-            <p className="text-gray-600 mt-1">Kaydettiğiniz kitaplara buradan ulaşabilirsiniz.</p>
+            <h1 className="text-3xl font-display font-bold text-dark dark:text-cream mb-2">Favori Kitaplarım</h1>
+            <p className="text-dark dark:text-cream font-display mt-1">Kaydettiğiniz kitaplara buradan ulaşabilirsiniz.</p>
           </div>
           <Link 
             to="/" 
-            className="text-pink-600 hover:underline font-medium"
+            className="text-gold hover:text-rust font-medium"
           >
             ← Kitap Keşfet
           </Link>

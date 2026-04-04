@@ -6,6 +6,9 @@ export default {
     ],
     theme: {
       extend: {
+        boxShadow: {
+          '2xl': '0 25px 50px -12px rgba(0, 0, 0, 0.15)', // Biraz daha yumuşak bir gölge
+        },
         fontFamily: {
           display: ['"Playfair Display"', 'serif'],
           body: ['"DM Sans"', 'sans-serif'],

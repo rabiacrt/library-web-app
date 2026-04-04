@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import BookCard from './components/BookCard';
 import Home from './pages/Home';
-import BookDetail from './pages/BookDetail';
 import Favorites from './pages/Favorites';
 import { useDarkMode } from './hooks/useDarkMode'
 
@@ -10,12 +10,12 @@ function App() {
 
   return (
     <Router>
-      <div className="{`min-h-screen bg-cream ${dark ? 'dark' : ''}`}">
+      <div className={`min-h-screen bg-cream ${dark ? 'dark' : ''}`}>
         <Navbar onToggleDark={toggleDark} dark={dark}/>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/book/:id" element={<BookDetail />} />
+          <Route path="/book/:id" element={<BookCard />} />
           <Route path="/favorites" element={<Favorites />} />
+          <Route path="/" element={<Home dark={dark} />} />
         </Routes>
       </div>
     </Router>

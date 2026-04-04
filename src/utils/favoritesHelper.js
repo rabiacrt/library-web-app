@@ -11,7 +11,8 @@ export const getFavorites = () => {
     if (isExist) {
       favs = favs.filter(f => f.id !== book.id);
     } else {
-      favs.push(book);
+      favs.push({ ...book, addedAt: new Date().toISOString() });
+
     }
   
     localStorage.setItem('library_favs', JSON.stringify(favs));

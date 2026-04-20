@@ -68,7 +68,7 @@ function QuotePopup({ quote, onClose, anchorX }) {
   )
 }
 
-//kitap Sırtı 
+//kitap sırtı 
 function BookSpine({ color1, color2, width, height, dark, onBookClick }) {
   const [hovered, setHovered] = useState(false)
   const [clicked, setClicked] = useState(false)
@@ -200,7 +200,7 @@ function Hero({ dark, searchTerm, onSearchChange, language, onLanguageChange, to
                 { value: 'en', label: '🇬🇧 İngilizce' },
                 { value: 'fr', label: '🇫🇷 Fransızca' },
                 { value: 'de', label: '🇩🇪 Almanca' },
-                { value: 'tr', label: '🇹🇷 Türkçe' },
+                { value: 'zh', label: '🇨🇳 Çince' },
               ]
             },
             {
@@ -247,7 +247,7 @@ function Hero({ dark, searchTerm, onSearchChange, language, onLanguageChange, to
       </div>
 
       <div style={{ position: 'relative', paddingTop: 12, overflow: 'visible' }}>
-{/* Raftaki kitaplar için */}
+{/* raftaki kitaplar için */}
         <div style={{
           position: 'absolute', bottom: 0, left: 0, right: 0, height: 100,
           pointerEvents: 'none',
@@ -294,8 +294,9 @@ function Hero({ dark, searchTerm, onSearchChange, language, onLanguageChange, to
     </div>
   )
 }
+const cache = new Map()
 
-const Home = ({ dark }) => {
+const Home = ({ dark, userId }) => {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -318,6 +319,16 @@ const Home = ({ dark }) => {
   }
 
   const loadBooks = useCallback(async (url) => {
+    //cache'de varsa direkt kullanılır
+    if (cache.has(url)) {
+      const cached = cache.get(url)
+      setBooks(cached.results || [])
+      setNextPageUrl(cached.next)
+      setPrevPageUrl(cached.previous)
+      setLoading(false)
+      return
+    }
+    
     setLoading(true);
     try {
       const data = await bookService.getAllBooks(url);
@@ -371,7 +382,7 @@ const Home = ({ dark }) => {
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
               {books.slice(0, 12).map(book => (
-                <BookCard key={book.id} book={book} />
+                <BookCard key={book.id} book={book} userId={userId} />
               ))}
             </div>
             {books.length === 0 ? (

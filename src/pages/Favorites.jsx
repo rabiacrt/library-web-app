@@ -4,20 +4,20 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Heart, BookOpen, Trash2, ArrowLeft } from 'lucide-react';
 import BookCard from '../components/BookCard';
 
-const Favorites = () => {
+const Favorites = ({ userId }) => {
   const [favoriteBooks, setFavoriteBooks] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    setFavoriteBooks(getFavorites());
-  }, []);
+    setFavoriteBooks(getFavorites(userId));
+  }, [userId]);
 
   const handleFavChange = () => {
-    setFavoriteBooks(getFavorites());
+    setFavoriteBooks(getFavorites(userId));
   };
 
   const handleClearAll = () => {
-    favoriteBooks.forEach(book => toggleFavorite(book));
+    favoriteBooks.forEach(book => toggleFavorite(book, userId));
     setFavoriteBooks([]);
   };
 
@@ -50,8 +50,7 @@ const Favorites = () => {
 
       <div className="mb-10 pb-6 border-b border-warm/20 dark:border-warm/10 flex items-end justify-between">
         <div>
-          
-          <h1 className=" font-italic text-[clamp(2rem,5vw,2.5rem)] font-black text-dark dark:text-cream -mt-4 leading-tight">
+          <h1 className="font-italic text-[clamp(2rem,5vw,2.5rem)] font-black text-dark dark:text-cream leading-tight">
             Favorilerim
           </h1>
           <p className="text-ink/45 dark:text-cream/40 text-sm mt-2 flex items-center gap-2">
@@ -78,7 +77,7 @@ const Favorites = () => {
 
           return (
             <div key={book.id} className="flex flex-col gap-1">
-              <BookCard book={book} onFavChange={handleFavChange} />
+              <BookCard book={book} onFavChange={handleFavChange} userId={userId} />
               {addedAt && (
                 <p className="text-[0.6rem] text-ink/30 dark:text-cream/25 text-center">
                   {addedAt} tarihinde eklendi

@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import Tilt from 'react-parallax-tilt';
-import { Heart, X, BookOpen } from 'lucide-react';
+import { Heart, X, BookOpen, BookMarked } from 'lucide-react';
 import { toggleFavorite, getFavorites } from '../utils/favoritesHelper';
+import BookReader from './BookReader';
 
-function BookModal({ book, onClose, isFav, onToggleFav }) {
+function BookModal({ book, onClose, isFav, onToggleFav, onRead }) {
   const author = book.authors?.length > 0
     ? book.authors.map(a => a.name).join(', ')
     : 'Bilinmeyen Yazar';
   const cover = book.formats?.['image/jpeg'];
+
+  const hasReadable = book.formats?.['text/plain; charset=utf-8'] ||
+                      book.formats?.['text/plain; charset=us-ascii'] ||
+                      book.formats?.['text/html']
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -56,17 +61,30 @@ function BookModal({ book, onClose, isFav, onToggleFav }) {
               </div>
             )}
 
-            <button
-              onClick={onToggleFav}
-              className={`flex items-center gap-2 text-xs tracking-wide border px-3 py-1.5 rounded-sm transition-all duration-200 ${
-                isFav
-                  ? 'bg-rust/10 text-rust border-rust/30 hover:bg-rust/20'
-                  : 'text-ink/50 dark:text-cream/50 border-warm/30 hover:bg-warm/10'
-              }`}
-            >
-              <Heart size={12} fill={isFav ? 'currentColor' : 'none'} />
-              {isFav ? 'Favorilerden Çıkar' : 'Favorilere Ekle'}
-            </button>
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={onToggleFav}
+                className={`flex items-center gap-2 text-xs tracking-wide border px-3 py-1.5 rounded-sm transition-all duration-200 ${
+                  isFav
+                    ? 'bg-rust/10 text-rust border-rust/30 hover:bg-rust/20'
+                    : 'text-ink/50 dark:text-cream/50 border-warm/30 hover:bg-warm/10'
+                }`}
+              >
+                <Heart size={12} fill={isFav ? 'currentColor' : 'none'} />
+                {isFav ? 'Favorilerden Çıkar' : 'Favorilere Ekle'}
+              </button>
+
+              {hasReadable && (
+                <button
+                  onClick={onRead}
+                  className="flex items-center gap-2 text-xs tracking-wide border px-3 py-1.5 rounded-sm
+                             bg-dark text-cream border-dark hover:bg-rust hover:border-rust transition-all duration-200"
+                >
+                  <BookMarked size={12} />
+                  Şimdi Oku
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
@@ -86,6 +104,7 @@ function BookModal({ book, onClose, isFav, onToggleFav }) {
         <hr className="border-warm/15 dark:border-warm/10 mx-6" />
 
         <div className="p-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
+          
           {book.formats?.['text/html'] && (
             <a href={book.formats['text/html']} target="_blank" rel="noreferrer"
               className="flex items-center justify-center gap-2 bg-rust text-cream px-4 py-2.5 rounded-sm hover:bg-dark dark:hover:bg-warm transition text-sm">
@@ -116,8 +135,9 @@ function BookModal({ book, onClose, isFav, onToggleFav }) {
   );
 }
 
-  const BookCard = ({ book, onFavChange, userId }) => {
+const BookCard = ({ book, onFavChange, userId }) => {
   const [modalOpen, setModalOpen] = useState(false);
+  const [readerOpen, setReaderOpen] = useState(false);
   const [isFav, setIsFav] = useState(false);
 
   useEffect(() => {
@@ -131,6 +151,11 @@ function BookModal({ book, onClose, isFav, onToggleFav }) {
     toggleFavorite(book, userId);
     setIsFav(prev => !prev);
     onFavChange?.();
+  };
+
+  const handleRead = () => {
+    setModalOpen(false);
+    setReaderOpen(true);
   };
 
   return (
@@ -156,25 +181,54 @@ function BookModal({ book, onClose, isFav, onToggleFav }) {
             </button>
           </div>
 
-          <div className="p-4 flex flex-col flex-grow" onClick={() => setModalOpen(true)}>
-            <h3 className="font-display font-bold text-lg line-clamp-2 mb-2 text-dark dark:text-cream group-hover:text-rust dark:group-hover:text-gold transition-colors duration-300">
+          <div className="p-4 flex flex-col flex-grow">
+            <h3
+              onClick={() => setModalOpen(true)}
+              className="font-display font-bold text-lg line-clamp-2 mb-2 text-dark dark:text-cream group-hover:text-rust dark:group-hover:text-gold transition-colors duration-300"
+            >
               {book.title}
             </h3>
             <p className="text-ink/50 dark:text-cream/50 text-sm mb-4 italic">
               {book.authors?.length > 0 ? book.authors.map(a => a.name).join(', ') : 'Bilinmeyen Yazar'}
             </p>
-            <button
-              onClick={() => setModalOpen(true)}
-              className="mt-auto block w-full text-center bg-rust dark:bg-warm text-cream py-2.5 rounded-md hover:bg-dark dark:hover:bg-gold transition-all duration-300 font-medium text-sm tracking-wide shadow-md"
-            >
-              Detayları Gör
-            </button>
+
+            <div className="mt-auto flex flex-col gap-2">
+              {(book.formats?.['text/plain; charset=utf-8'] ||
+                book.formats?.['text/plain; charset=us-ascii'] ||
+                book.formats?.['text/html']) && (
+                <button
+                  onClick={handleRead}
+                  className="w-full flex items-center justify-center gap-2 bg-dark dark:bg-warm/80 text-cream
+                             py-2 rounded-md hover:bg-rust transition-all duration-300 text-xs tracking-wide font-medium"
+                >
+                  <BookMarked size={13} /> Şimdi Oku
+                </button>
+              )}
+
+              <button
+                onClick={() => setModalOpen(true)}
+                className="w-full text-center bg-rust dark:bg-warm text-cream py-2.5 rounded-md
+                           hover:bg-dark dark:hover:bg-gold transition-all duration-300 font-medium text-sm tracking-wide shadow-md"
+              >
+                Detayları Gör
+              </button>
+            </div>
           </div>
         </div>
       </Tilt>
 
       {modalOpen && (
-        <BookModal book={book} onClose={() => setModalOpen(false)} isFav={isFav} onToggleFav={handleToggleFav} />
+        <BookModal
+          book={book}
+          onClose={() => setModalOpen(false)}
+          isFav={isFav}
+          onToggleFav={handleToggleFav}
+          onRead={handleRead}
+        />
+      )}
+
+      {readerOpen && (
+        <BookReader book={book} onClose={() => setReaderOpen(false)} />
       )}
     </>
   );

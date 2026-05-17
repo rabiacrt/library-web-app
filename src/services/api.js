@@ -10,10 +10,8 @@ const apiClient = axios.create({
 
 export const bookService = {
     getAllBooks: async (url = '/books') => {
-        try {
-            const targetUrl = url.startsWith('http') ? url : url;
-            
-            const response = await apiClient.get(targetUrl);
+        try {    
+            const response = await apiClient.get(url);
             return response.data;
         }catch (error) {
             console.error("Kitaplar yüklenirken hata oluştu:", error);

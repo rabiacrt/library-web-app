@@ -165,7 +165,7 @@ const BookCard = ({ book, onFavChange, userId }) => {
         perspective={1000} scale={1.02} gyroscope={true}
         glareEnable={true} glareMaxOpacity={0.1}
         glareColor="#ffffff" glareBorderRadius="8px"
-        transitionSpeedAttributes={1500}
+        transitionSpeed={1500}
       >
         <div className="group border border-warm/20 dark:border-warm/10 rounded-lg overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-300 bg-light-warm dark:bg-ink flex flex-col h-full cursor-pointer">
           <div onClick={() => setModalOpen(true)} className="relative w-full h-72 overflow-hidden bg-gray-200">

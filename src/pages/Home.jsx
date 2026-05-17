@@ -68,7 +68,7 @@ function QuotePopup({ quote, onClose, anchorX }) {
   )
 }
 
-//kitap sırtı 
+// kitap sırtı 
 function BookSpine({ color1, color2, width, height, dark, onBookClick }) {
   const [hovered, setHovered] = useState(false)
   const [clicked, setClicked] = useState(false)
@@ -296,8 +296,10 @@ function Hero({ dark, searchTerm, onSearchChange, language, onLanguageChange, to
 }
 const cache = new Map()
 
+const PAGE_SIZE = 12
+
 const Home = ({ dark, userId }) => {
-  const [books, setBooks] = useState([]);
+  const [allBooks, setAllBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [nextPageUrl, setNextPageUrl] = useState(null);
@@ -306,8 +308,14 @@ const Home = ({ dark, userId }) => {
   const [topic, setTopic] = useState('');
   const [quote, setQuote] = useState(null);
   const [quoteAnchorX, setQuoteAnchorX] = useState(0);
+  const [clientPage, setClientPage] = useState(0); 
   const usedQuotes = useRef([]);
   const debouncedSearch = useDebounce(searchTerm, 500);
+
+  // gösterilecek 12'lik dilim
+  const books = allBooks.slice(clientPage * PAGE_SIZE, (clientPage + 1) * PAGE_SIZE)
+  const clientHasPrev = clientPage > 0
+  const clientHasNext = (clientPage + 1) * PAGE_SIZE < allBooks.length || !!nextPageUrl
 
   const handleBookClick = (x) => {
     if (usedQuotes.current.length >= QUOTES.length) usedQuotes.current = []
@@ -318,21 +326,21 @@ const Home = ({ dark, userId }) => {
     setQuote(pick)
   }
 
-  const loadBooks = useCallback(async (url) => {
-    //cache'de varsa direkt kullanılır
+  const loadBooks = useCallback(async (url, append = false) => {
     if (cache.has(url)) {
       const cached = cache.get(url)
-      setBooks(cached.results || [])
+      setAllBooks(prev => append ? [...prev, ...(cached.results || [])] : (cached.results || []))
       setNextPageUrl(cached.next)
       setPrevPageUrl(cached.previous)
       setLoading(false)
       return
     }
-    
+
     setLoading(true);
     try {
       const data = await bookService.getAllBooks(url);
-      setBooks(data.results || []);
+      cache.set(url, data)
+      setAllBooks(prev => append ? [...prev, ...(data.results || [])] : (data.results || []))
       setNextPageUrl(data.next);
       setPrevPageUrl(data.previous);
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -347,12 +355,22 @@ const Home = ({ dark, userId }) => {
     let url = `/books/?search=${encodeURIComponent(debouncedSearch)}`;
     if (language) url += `&languages=${language}`;
     if (topic) url += `&topic=${topic}`;
+    setClientPage(0)
+    setAllBooks([])
     loadBooks(url);
   }, [debouncedSearch, language, topic, loadBooks]);
 
-  const handlePageChange = (direction) => {
-    const targetUrl = direction === 'next' ? nextPageUrl : prevPageUrl;
-    if (targetUrl) loadBooks(targetUrl);
+  const handlePageChange = async (direction) => {
+    if (direction === 'next') {
+      const nextClientPage = clientPage + 1
+      if ((nextClientPage + 1) * PAGE_SIZE > allBooks.length && nextPageUrl) {
+        await loadBooks(nextPageUrl, true)
+      }
+      setClientPage(nextClientPage)
+    } else {
+      setClientPage(prev => Math.max(0, prev - 1))
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   };
 
   return (
@@ -381,14 +399,14 @@ const Home = ({ dark, userId }) => {
         ) : (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-              {books.slice(0, 12).map(book => (
+              {books.map(book => (
                 <BookCard key={book.id} book={book} userId={userId} />
               ))}
             </div>
-            {books.length === 0 ? (
+            {allBooks.length === 0 ? (
               <p className="text-center text-ink/40 dark:text-cream/40 mt-10">Kitap bulunamadı.</p>
             ) : (
-              <Pagination hasPrev={!!prevPageUrl} hasNext={!!nextPageUrl} onPageChange={handlePageChange} />
+              <Pagination hasPrev={clientHasPrev} hasNext={clientHasNext} onPageChange={handlePageChange} />
             )}
           </>
         )}

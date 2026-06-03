@@ -294,12 +294,13 @@ function Hero({ dark, searchTerm, onSearchChange, language, onLanguageChange, to
     </div>
   )
 }
-const cache = new Map()
 
-const PAGE_SIZE = 12
+
+const cache = new Map()
+const PAGE_SIZE = 32 
 
 const Home = ({ dark, userId }) => {
-  const [allBooks, setAllBooks] = useState([]);
+  const [books, setBooks] = useState([]); 
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [nextPageUrl, setNextPageUrl] = useState(null);
@@ -308,14 +309,11 @@ const Home = ({ dark, userId }) => {
   const [topic, setTopic] = useState('');
   const [quote, setQuote] = useState(null);
   const [quoteAnchorX, setQuoteAnchorX] = useState(0);
-  const [clientPage, setClientPage] = useState(0); 
   const usedQuotes = useRef([]);
   const debouncedSearch = useDebounce(searchTerm, 500);
 
-  // gösterilecek 12'lik dilim
-  const books = allBooks.slice(clientPage * PAGE_SIZE, (clientPage + 1) * PAGE_SIZE)
-  const clientHasPrev = clientPage > 0
-  const clientHasNext = (clientPage + 1) * PAGE_SIZE < allBooks.length || !!nextPageUrl
+  const hasPrev = !!prevPageUrl;
+  const hasNext = !!nextPageUrl;
 
   const handleBookClick = (x) => {
     if (usedQuotes.current.length >= QUOTES.length) usedQuotes.current = []
@@ -326,21 +324,23 @@ const Home = ({ dark, userId }) => {
     setQuote(pick)
   }
 
-  const loadBooks = useCallback(async (url, append = false) => {
+  const loadBooks = useCallback(async (url) => {
+    // Önbellek kontrolü
     if (cache.has(url)) {
-      const cached = cache.get(url)
-      setAllBooks(prev => append ? [...prev, ...(cached.results || [])] : (cached.results || []))
-      setNextPageUrl(cached.next)
-      setPrevPageUrl(cached.previous)
-      setLoading(false)
-      return
+      const cachedData = cache.get(url);
+      setBooks(cachedData.results || []);
+      setNextPageUrl(cachedData.next);
+      setPrevPageUrl(cachedData.previous);
+      setLoading(false);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
     }
 
     setLoading(true);
     try {
       const data = await bookService.getAllBooks(url);
-      cache.set(url, data)
-      setAllBooks(prev => append ? [...prev, ...(data.results || [])] : (data.results || []))
+      cache.set(url, data);
+      setBooks(data.results || []);
       setNextPageUrl(data.next);
       setPrevPageUrl(data.previous);
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -355,27 +355,20 @@ const Home = ({ dark, userId }) => {
     let url = `/books/?search=${encodeURIComponent(debouncedSearch)}`;
     if (language) url += `&languages=${language}`;
     if (topic) url += `&topic=${topic}`;
-    setClientPage(0)
-    setAllBooks([])
     loadBooks(url);
   }, [debouncedSearch, language, topic, loadBooks]);
 
-  const handlePageChange = async (direction) => {
-    if (direction === 'next') {
-      const nextClientPage = clientPage + 1
-      if ((nextClientPage + 1) * PAGE_SIZE > allBooks.length && nextPageUrl) {
-        await loadBooks(nextPageUrl, true)
-      }
-      setClientPage(nextClientPage)
-    } else {
-      setClientPage(prev => Math.max(0, prev - 1))
+  const handlePageChange = (direction) => {
+    if (direction === 'next' && nextPageUrl) {
+      loadBooks(nextPageUrl);
+    } else if (direction === 'prev' && prevPageUrl) {
+      loadBooks(prevPageUrl);
     }
-    window.scrollTo({ top: 0, behavior: 'smooth' })
   };
 
   return (
     <div className="min-h-screen bg-cream dark:bg-dark">
-      <div className="">
+      <div>
         <Hero
           dark={dark}
           searchTerm={searchTerm}
@@ -403,10 +396,10 @@ const Home = ({ dark, userId }) => {
                 <BookCard key={book.id} book={book} userId={userId} />
               ))}
             </div>
-            {allBooks.length === 0 ? (
+            {books.length === 0 ? (
               <p className="text-center text-ink/40 dark:text-cream/40 mt-10">Kitap bulunamadı.</p>
             ) : (
-              <Pagination hasPrev={clientHasPrev} hasNext={clientHasNext} onPageChange={handlePageChange} />
+              <Pagination hasPrev={hasPrev} hasNext={hasNext} onPageChange={handlePageChange} />
             )}
           </>
         )}
@@ -416,3 +409,4 @@ const Home = ({ dark, userId }) => {
 };
 
 export default Home;
+
